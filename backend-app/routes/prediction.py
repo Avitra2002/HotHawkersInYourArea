@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from flask_cors import cross_origin
 from pydantic import BaseModel
 from flask import Blueprint, request, jsonify
 from utils.firebase_config import get_collection
@@ -8,6 +9,7 @@ prediction_bp = Blueprint("predict", __name__)
 
 
 #Create new instance of data
+@cross_origin()
 @prediction_bp.route('/predict', methods=['POST'])
 def add_data():
     try:
