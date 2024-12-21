@@ -36,9 +36,10 @@ const PredictionWidget: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const currentTime = new Date().toISOString();
+      console.log("Time passed",currentTime)
       
-      const response = await fetch('http://localhost:5000/predict', {
+      const response = await fetch('http://127.0.0.1:5000/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

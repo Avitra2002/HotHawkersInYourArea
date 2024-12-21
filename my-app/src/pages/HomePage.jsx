@@ -11,7 +11,13 @@ const HomePage = () => {
     <>
       <Hero />
       <StatusBar />
-      <PredictionWidget />
+      <div className="h-full min-h-[600px] w-full flex items-center justify-center bg-gray-50 py-8">
+        <div className="px-4 w-full md:px-8 lg:px-0">
+          <div className="w-full mx-auto max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl">
+            <PredictionWidget />
+          </div>
+        </div>
+      </div>
       <Widget />
       <HawkerListings isHome = {true}/>
       <ViewAllHawkers />
