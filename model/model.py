@@ -58,28 +58,37 @@ class CanteenAnalyzer:
             "#E6194B",  # Red for Queue 1
             "#3CB44B",  # Green for Queue 2
             "#FFE119",  # Yellow for Queue 3
-            "#4363D8",  # Blue for Queue 4
+            # "#4363D8",  # Blue for Queue 4
             "#F58231",  # Orange for Seating 1
             "#911EB4",  # Purple for Seating 2
-            "#42D4F4",  # Cyan for Seating 3
-            "#F032E6",  # Magenta for Seating 4
-            "#BFEF45",  # Lime for Seating 5
-            "#FABEBE",  # Pink for Seating 6
+            # "#42D4F4",  # Cyan for Seating 3
+            # "#F032E6",  # Magenta for Seating 4
+            # "#BFEF45",  # Lime for Seating 5
+            # "#FABEBE",  # Pink for Seating 6
         ])
         
         # Zone labels
+        # self.zone_labels = {
+        #     0: "Queue - Western",
+        #     1: "Queue - Asian",
+        #     2: "Queue - Indian",
+        #     3: "Queue - Drinks",
+        #     4: "Seating - Main Hall",
+        #     5: "Seating - Window Area",
+        #     6: "Seating - Corner",
+        #     7: "Seating - Outdoor",
+        #     8: "Seating - Private",
+        #     9: "Seating - Extension"
+        # }
+
         self.zone_labels = {
             0: "Queue - Western",
             1: "Queue - Asian",
             2: "Queue - Indian",
-            3: "Queue - Drinks",
-            4: "Seating - Main Hall",
-            5: "Seating - Window Area",
-            6: "Seating - Corner",
-            7: "Seating - Outdoor",
-            8: "Seating - Private",
-            9: "Seating - Extension"
+            3: "Seating - Main Hall",
+            4: "Seating - Window Area",
         }
+
         self.box_annotator = sv.BoundingBoxAnnotator(color=self.colors)
         self.label_annotator = sv.LabelAnnotator(color=self.colors)
         self.zone_annotators = [
@@ -217,13 +226,17 @@ class CanteenAnalyzer:
     def get_zone_capacity(self, zone_id: int) -> int:
         """Return the seating capacity for each seating zone"""
         # Define seating capacity for each seating area
+        # seating_capacity = {
+        #     4: 100,  # Main Hall
+        #     5: 50,   # Window Area
+        #     6: 30,   # Corner
+        #     7: 40,   # Outdoor
+        #     8: 20,   # Private
+        #     9: 60    # Extension
+        # }
         seating_capacity = {
-            4: 100,  # Main Hall
-            5: 50,   # Window Area
-            6: 30,   # Corner
-            7: 40,   # Outdoor
-            8: 20,   # Private
-            9: 60    # Extension
+            3: 6,  # Main Hall
+            4: 6,   # Window Area
         }
         return seating_capacity.get(zone_id, 0)
     
@@ -306,21 +319,20 @@ class CanteenAnalyzer:
 
 
 def main():
-    # Example zone configuration for all areas (adjust coordinates for your canteen)
     zones_config = [
         # Queue Areas
         [[100, 100], [200, 100], [200, 200], [100, 200]],  # Western Food Queue
         [[250, 100], [350, 100], [350, 200], [250, 200]],  # Asian Food Queue
         [[400, 100], [500, 100], [500, 200], [400, 200]],  # Indian Food Queue
-        [[550, 100], [650, 100], [650, 200], [550, 200]],  # Drinks Queue
+        # [[550, 100], [650, 100], [650, 200], [550, 200]],  # Drinks Queue
         
         # Seating Areas
         [[100, 300], [300, 300], [300, 500], [100, 500]],  # Main Hall
         [[350, 300], [550, 300], [550, 500], [350, 500]],  # Window Area
-        [[600, 300], [800, 300], [800, 500], [600, 500]],  # Corner
-        [[100, 550], [300, 550], [300, 750], [100, 750]],  # Outdoor
-        [[350, 550], [550, 550], [550, 750], [350, 750]],  # Private
-        [[600, 550], [800, 550], [800, 750], [600, 750]],  # Extension
+        # [[600, 300], [800, 300], [800, 500], [600, 500]],  # Corner
+        # [[100, 550], [300, 550], [300, 750], [100, 750]],  # Outdoor
+        # [[350, 550], [550, 550], [550, 750], [350, 750]],  # Private
+        # [[600, 550], [800, 550], [800, 750], [600, 750]],  # Extension
     ]
     
     analyzer = CanteenAnalyzer(
