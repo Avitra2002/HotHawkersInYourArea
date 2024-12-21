@@ -402,9 +402,9 @@ class CanteenAnalyzer:
             0: "Chicken Rice",
             1: "Indian",
             2: "Taiwanese",
-            3: "Seating - Aisle 1",
-            4: "Seating - Aisle 2",
-            5: "Seating - Aisle 3"
+            3: "Zone 1",
+            4: "Zone 2",
+            5: "Zone 3"
         }
 
         self.box_annotator = sv.BoundingBoxAnnotator(color=self.colors)
