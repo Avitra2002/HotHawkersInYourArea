@@ -93,13 +93,14 @@ def get_average_dwell_times():
         # Get the current timestamp and calculate the threshold (5 minutes ago)
         current_time = datetime.now(timezone.utc).replace(tzinfo=pytz.UTC)
         time_threshold = current_time - timedelta(minutes=5)
-        # Fetch the Firestore collection
         
+        # Fetch the Firestore collection
         collection = get_collection('dwelltimes')
-        store_collection = get_collection('stores')  
+        store_collection = get_collection('stores')
 
         # Filter documents with timestamps greater than the threshold
         docs = collection.stream()
+        
         # Initialize a dictionary to aggregate dwell times
         store_dwell_times = {}
 
@@ -120,17 +121,24 @@ def get_average_dwell_times():
 
             # Check if the record's timestamp is within the threshold
             if record_timestamp >= time_threshold:
-                store = record.get('store')
+                store = record.get('name')
+                
+                # Handle dwell_time which might be a string or number
                 dwell_time = record.get('dwell_time', 0)
-                # store_collection = get_collection("stores")
-                # store_details = store_collection.where("name", "==", store).stream()
+                if isinstance(dwell_time, str):
+                    try:
+                        dwell_time = float(dwell_time)
+                    except ValueError:
+                        dwell_time = 0  # If conversion fails, set dwell_time to 0
+                elif not isinstance(dwell_time, (int, float)):
+                    dwell_time = 0  # If it's not a number, set dwell_time to 0
+                
                 if store:
                     if store not in store_dwell_times:
                         store_dwell_times[store] = []
                     store_dwell_times[store].append(dwell_time)
 
         # Compute the average dwell time for each store and format the output
-        
         average_dwell_times = []
         for store, times in store_dwell_times.items():
             # Compute the average dwell time
@@ -158,6 +166,7 @@ def get_average_dwell_times():
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
+
     
 
 
@@ -229,7 +238,7 @@ def get_average_dwell_time_for_store():
         # Create the final JSON response
         result = {
             "storeName": storename,
-            "averageDwellTime": average_dwell_time,
+            "averageDwellTime": round(average_dwell_time, 2),
             "description": store_details["description"],
             "location": store_details["location"],
         }
