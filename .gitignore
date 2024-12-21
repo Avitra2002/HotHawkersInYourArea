@@ -12,4 +12,6 @@ model/venv
 model/prototype_video.mp4
 backend-app/.venv
 *.__pycache__
->>>>>>> 47caa020c7aa1cd3c6ae19e097ed0904a6102fb2
+*.MOV
+*.mp4
+*.mov
