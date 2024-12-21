@@ -17,3 +17,5 @@ backend-app/.venv
 *.mov
 model/synthetic_dwell_times.csv
 backend-app/routes/__pycache__
+backend-app/utils/__pycache__
+backend-app/routes/__pycache__
