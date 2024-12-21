@@ -4,7 +4,7 @@ export const PreferencesContext = createContext();
 
 export const PreferencesProvider = ({ children }) => {
   const [selectedCanteen, setSelectedCanteen] = useState('');
-  const [selectedStore, setSelectedStore] = useState([]);
+  const [selectedStore, setSelectedStore] = useState(null);
   const [lunchTime, setLunchTime] = useState('');
   const [dinnerTime, setDinnerTime] = useState('');
 

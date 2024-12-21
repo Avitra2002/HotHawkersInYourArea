@@ -38,7 +38,7 @@ const Navbar = () => {
             <img
               className="h-10 w-auto"
               src={logo}
-              alt="Hawker Centre Analysis Logo"
+              alt="HIIYA Logo"
             />
             <span className="text-white text-2xl font-bold ml-2">
               HHIYA
@@ -50,8 +50,11 @@ const Navbar = () => {
             <NavLink to="/" className={linkClass}>
               Home
             </NavLink>
+            <NavLink to="/heatmap" className={linkClass}>
+              Heatmap
+            </NavLink>
             <NavLink to="/hawkers" className={linkClass}>
-              Stores
+              All Stores
             </NavLink>
             <NavLink to="/preferences" className={linkClass}>
               Edit Preferences

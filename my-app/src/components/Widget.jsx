@@ -9,9 +9,10 @@ const Widget = () => {
   useEffect(() => {
     if (selectedStore) {
       const payload = { store: selectedStore };
+      console.log(payload);
 
       // Make a POST request to the backend
-      fetch('https://example.com/api/wait-times', {
+      fetch('http://127.0.0.1:5000/dwelltimes/average', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,8 +27,7 @@ const Widget = () => {
         })
         .then((data) => {
           // Update state with the fetched data
-          setCurrentWaitTime(data.currentWaitTime);
-          setPredictedWaitTime(data.predictedWaitTime);
+          setCurrentWaitTime(data.averageDwellTime);
         })
         .catch((error) => {
           console.error('Error fetching wait times:', error);
@@ -36,14 +36,20 @@ const Widget = () => {
   }, [selectedStore]);
 
   return (
-    <section className="py-4">
-      <div className="container-xl lg:container m-auto">
+    <section className="py-6">
+      <div className="container-xl lg:container mx-auto">
         <div className="grid grid-cols-1 gap-4 p-4 rounded-lg place-items-center">
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold">{selectedStore || 'Loading...'}</h2>
+          <div className="bg-gray-100 p-4 shadow-md w-[90%] mx-auto rounded-lg lg:w-[90%]">
+            <h2 className="text-2xl font-bold text-center">
+              {selectedStore || 'Loading...'}
+            </h2>
             <br />
-            <p className="mb-2">Current Wait Time: {currentWaitTime || 'Loading...'}</p>
-            <p className="mb-4">Predicted Wait Time: {predictedWaitTime || 'Loading...'}</p>
+            <p className="mb-2 text-center">
+              Current Wait Time: {currentWaitTime ? `${currentWaitTime} mins` : 'Loading...'}
+            </p>
+            <p className="mb-4 text-center">
+              Predicted Wait Time: {predictedWaitTime ? `${currentWaitTime} mins` : 'Loading...'}
+            </p>
           </div>
         </div>
       </div>

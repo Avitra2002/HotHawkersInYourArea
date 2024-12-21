@@ -1,13 +1,13 @@
 import React from 'react'
-import { useState } from 'react'
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom"
 import MainLayout from './layouts/MainLayout'
 import HomePage from './pages/HomePage'
+import HeatmapPage from './pages/HeatmapPage'
 import HawkersPage from './pages/HawkersPage'
-import NotFoundPage from './pages/NotFoundPage'
-import HawkerPage, {hawkerLoader} from './pages/HawkerPage'
+import HawkerPage from './pages/HawkerPage'
 import PreferencesPage from './pages/PreferencesPage'
 import SignUpPage from './pages/SignUpPage'
+import NotFoundPage from './pages/NotFoundPage'
 import { PreferencesProvider } from './Contexts/PreferencesContext'
 import { SignUpPageProvider } from './contexts/SignUpPageContext'
 
@@ -16,9 +16,10 @@ const router = createBrowserRouter(
   <>
     <Route path="/" element={<MainLayout />}>
       <Route index element={<HomePage />} />
+      <Route path="/heatmap" element={<HeatmapPage />} />
       <Route path="/hawkers" element={<HawkersPage />} />
       <Route path="/preferences" element={<PreferencesPage />} />
-      <Route path="/hawkers/:id" element={<HawkerPage />} loader={hawkerLoader}/>
+      <Route path="/hawkers/:id" element={<HawkerPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>
 

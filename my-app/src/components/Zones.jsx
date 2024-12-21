@@ -3,15 +3,15 @@ import HawkerListing from './HawkerListing'
 import Spinner from './Spinner'
 import { PreferencesContext } from '../Contexts/PreferencesContext';
 
-const HawkerListings = ({ isHome = false }) => {
+const Zones = () => {
   const { selectedStore } = useContext(PreferencesContext);
-  const [stores, setStores] = useState([])
+  const [zones, setZones] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
       if (selectedStore) {
         // Make a POST request to the backend
-        fetch('http://127.0.0.1:5000/dwelltimes/average', {
+        fetch('http://127.0.0.1:5000/counts/capacity', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ const HawkerListings = ({ isHome = false }) => {
           .then((data) => {
             // Update state with the fetched data
             console.log(data)
-            setStores(data);
+            setZones(data);
             setLoading(false);
           })
           .catch((error) => {
@@ -39,12 +39,12 @@ const HawkerListings = ({ isHome = false }) => {
     <section className="bg-blue-50 px-4 py-10">
       <div className="container-xl lg:container m-auto">
         <h2 className="text-3xl font-bold text-indigo-500 mb-6 text-center">
-          {isHome ? "Other Stores" : "All Stores"}
+          Zones
         </h2>
           {loading ? (<Spinner />) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {stores.map((store) => (
-                <HawkerListing key={store.storeNames} store={store} />
+                <HawkerListing key={store.id} store={store} />
               ))}
             </div>
           )}
@@ -53,4 +53,4 @@ const HawkerListings = ({ isHome = false }) => {
   )
 }
 
-export default HawkerListings
+export default Zones
