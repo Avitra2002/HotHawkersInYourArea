@@ -7,3 +7,4 @@ model/output
 model/venv
 model/prototype_video.mp4
 backend-app/.venv
+*.__pycache__
