@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PreferencesContext } from '../Contexts/PreferencesContext';
 
@@ -6,55 +6,59 @@ const PreferencesPage = () => {
   const {
     selectedCanteen,
     setSelectedCanteen,
-    stores,
-    setStores,
+    selectedStore,
+    setSelectedStore,
     lunchTime,
     setLunchTime,
     dinnerTime,
     setDinnerTime,
   } = useContext(PreferencesContext);
 
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const canteenStores = {
-    'SUTD Canteen': ['Cai Fan', 'Chicken Rice', 'Western Food'],
+    'SUTD Canteen': ['Taiwanese', 'Chicken Rice', 'Indian'],
     'Woodleigh Village Hawker Centre': ['Bak Kut Teh', 'Laksa', 'Fishball Noodles'],
     'North Spine Koufu': ['Japanese Cuisine', 'Korean BBQ', 'Thai Food'],
   };
 
-  const lunchTimes = ['12:00 PM - 1:00 PM', '1:00 PM - 2:00 PM', '2:00 PM - 3:00 PM'];
-  const dinnerTimes = ['6:00 PM - 7:00 PM', '7:00 PM - 8:00 PM', '8:00 PM - 9:00 PM'];
-
   const handleCanteenChange = (event) => {
     const selected = event.target.value;
     setSelectedCanteen(selected);
-    setStores(canteenStores[selected] || []);
+    setSelectedStore(''); // Reset the store when the canteen changes
   };
 
-  const handleLunchChange = (event) => setLunchTime(event.target.value);
-  const handleDinnerChange = (event) => setDinnerTime(event.target.value);
+  const handleStoreChange = (event) => {
+    setSelectedStore(event.target.value);
+  };
+
+  const handleLunchChange = (event) => {
+    setLunchTime(event.target.value);
+  };
+
+  const handleDinnerChange = (event) => {
+    setDinnerTime(event.target.value);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setError('');
 
-    if (!selectedCanteen || !lunchTime || !dinnerTime) {
-      setError('Please fill out all fields.');
+    if (!selectedCanteen || !selectedStore || !lunchTime || !dinnerTime) {
+      alert('Please fill out all fields.');
       return;
     }
 
-    // Preferences are already saved in the context
-    console.log('Preferences saved:', {
+    console.log('Preferences saved in context:', {
       selectedCanteen,
-      stores,
+      selectedStore,
       lunchTime,
       dinnerTime,
     });
 
-    // Navigate to another page after submission
     navigate('/');
   };
+
+  const stores = canteenStores[selectedCanteen] || [];
 
   return (
     <section className="bg-indigo-50">
@@ -94,6 +98,8 @@ const PreferencesPage = () => {
                 id="store"
                 name="store"
                 className="border rounded w-full py-2 px-3"
+                value={selectedStore}
+                onChange={handleStoreChange}
                 required
                 disabled={!stores.length}
               >
@@ -123,7 +129,7 @@ const PreferencesPage = () => {
                 <option value="" disabled>
                   Select a lunch time
                 </option>
-                {lunchTimes.map((time) => (
+                {['12:00 PM - 1:00 PM', '1:00 PM - 2:00 PM', '2:00 PM - 3:00 PM'].map((time) => (
                   <option key={time} value={time}>
                     {time}
                   </option>
@@ -146,15 +152,13 @@ const PreferencesPage = () => {
                 <option value="" disabled>
                   Select a dinner time
                 </option>
-                {dinnerTimes.map((time) => (
+                {['6:00 PM - 7:00 PM', '7:00 PM - 8:00 PM', '8:00 PM - 9:00 PM'].map((time) => (
                   <option key={time} value={time}>
                     {time}
                   </option>
                 ))}
               </select>
             </div>
-
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
             <div>
               <button

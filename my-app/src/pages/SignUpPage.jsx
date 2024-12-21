@@ -2,9 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SignUpPageContext } from '../contexts/SignUpPageContext';
 
-
 const SignUpPage = () => {
-  
   const {
     name,
     setName,
@@ -30,7 +28,7 @@ const SignUpPage = () => {
     }
 
     // Preferences are already saved in the context
-    console.log('Preferences saved:', {
+    console.log('User details saved:', {
       name,
       email,
       password,
@@ -90,12 +88,12 @@ const SignUpPage = () => {
               </div>
 
               <div>
-              <button
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
-                type="submit"
-              >
-                Submit
-              </button>
+                <button
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                  type="submit"
+                >
+                  Submit
+                </button>
               </div>
             </form>
           </div>

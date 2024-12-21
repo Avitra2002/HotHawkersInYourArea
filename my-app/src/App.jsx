@@ -20,8 +20,9 @@ const router = createBrowserRouter(
       <Route path="/preferences" element={<PreferencesPage />} />
       <Route path="/hawkers/:id" element={<HawkerPage />} loader={hawkerLoader}/>
       <Route path="*" element={<NotFoundPage />} />
-      <Route path='/login' element={<SignUpPage />} />
     </Route>
+
+    <Route path='/login' element={<SignUpPage />} />
   </>
   )
 )

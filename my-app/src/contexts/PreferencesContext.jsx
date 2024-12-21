@@ -4,15 +4,15 @@ export const PreferencesContext = createContext();
 
 export const PreferencesProvider = ({ children }) => {
   const [selectedCanteen, setSelectedCanteen] = useState('');
-  const [stores, setStores] = useState([]);
+  const [selectedStore, setSelectedStore] = useState([]);
   const [lunchTime, setLunchTime] = useState('');
   const [dinnerTime, setDinnerTime] = useState('');
 
   const preferences = {
     selectedCanteen,
     setSelectedCanteen,
-    stores,
-    setStores,
+    selectedStore,
+    setSelectedStore,
     lunchTime,
     setLunchTime,
     dinnerTime,
@@ -25,5 +25,3 @@ export const PreferencesProvider = ({ children }) => {
     </PreferencesContext.Provider>
   );
 };
-
-http://485674856/preferences/{stores}
