@@ -35,6 +35,7 @@ const PreferencesPage = () => {
 
     const preferences = {
       selectedCanteen,
+      stores,
       lunchTime,
       dinnerTime,
     };

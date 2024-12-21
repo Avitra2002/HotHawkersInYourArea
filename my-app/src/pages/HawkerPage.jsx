@@ -6,18 +6,18 @@ const HawkerPage = () => {
     const job = useLoaderData()
 
     return (
-        <>
-        <section>
-        <div className="container m-auto py-6 px-6">
-          <a
-            href="/jobs.html"
-            className="text-indigo-500 hover:text-indigo-600 flex items-center"
-          >
-            <i className="fas fa-arrow-left mr-2"></i> Back to Job Listings
-          </a>
-        </div>
+      <>
+      <section>
+       <div className="container m-auto py-6 px-6 flex justify-end">
+        <a
+          href="/"
+          className="text-indigo-500 hover:text-indigo-600 flex items-center"
+        >
+          <i className="fas fa-arrow-left mr-2"></i> Back to Homepage
+        </a>
+       </div>
       </section>
-  
+
       <section className="bg-indigo-50">
         <div className="container m-auto py-10 px-6">
           <div className="grid grid-cols-1 md:grid-cols-70/30 w-full gap-6">

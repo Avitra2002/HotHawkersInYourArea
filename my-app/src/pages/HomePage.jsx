@@ -1,14 +1,16 @@
 import React from 'react'
 import Hero from "../components/Hero"
-import HomeCards from "../components/HomeCards"
+import StatusBar from '../components/StatusBar'
+import Widget from "../components/Widget"
 import HawkerListings from "../components/HawkerListings"
-import ViewAllHawkers from "../components/ViewAllHawkers"
+import ViewAllHawkers from "../components/ViewAllStores"
 
 const HomePage = () => {
   return (
     <>
       <Hero />
-      <HomeCards />
+      <StatusBar />
+      <Widget />
       <HawkerListings isHome = {true}/>
       <ViewAllHawkers />
     </>
