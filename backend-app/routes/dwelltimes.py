@@ -170,7 +170,7 @@ def get_average_dwell_time_for_store():
 
         # Get the current timestamp and calculate the threshold (5 minutes ago)
         current_time = datetime.now(timezone.utc).replace(tzinfo=pytz.UTC)
-        time_threshold = current_time - timedelta(minutes=5)
+        time_threshold = current_time - timedelta(minutes=10000)
 
         # Fetch the Firestore collections
         collection = get_collection('dwelltimes')
@@ -198,11 +198,19 @@ def get_average_dwell_time_for_store():
 
             # Check if the record's timestamp is within the threshold
             if record_timestamp >= time_threshold:
-                store = record.get('store')
-                dwell_time = record.get('dwell_time', 0)
+                print("Hello")
+                store = record.get('name')
+                dwell_time_str = record.get('dwell_time', '0')  # Default to '0' if no dwell time is found
+                print(dwell_time_str)
+                try:
+                    # Convert the dwell time string to float
+                    dwell_time = float(dwell_time_str)
+                except ValueError:
+                    dwell_time = 0  # In case the string is not a valid float, set to 0
+                
                 if store == storename:
                     dwell_times.append(dwell_time)
-
+        print(dwell_times)
         # Compute the average dwell time for the specified store
         if dwell_times:
             average_dwell_time = sum(dwell_times) / len(dwell_times)
