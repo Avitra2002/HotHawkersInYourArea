@@ -94,7 +94,9 @@ def get_average_dwell_times():
         current_time = datetime.now(timezone.utc).replace(tzinfo=pytz.UTC)
         time_threshold = current_time - timedelta(minutes=5)
         # Fetch the Firestore collection
+        
         collection = get_collection('dwelltimes')
+        store_collection = get_collection('stores')  
 
         # Filter documents with timestamps greater than the threshold
         docs = collection.stream()
@@ -120,16 +122,36 @@ def get_average_dwell_times():
             if record_timestamp >= time_threshold:
                 store = record.get('store')
                 dwell_time = record.get('dwell_time', 0)
+                # store_collection = get_collection("stores")
+                # store_details = store_collection.where("name", "==", store).stream()
                 if store:
                     if store not in store_dwell_times:
                         store_dwell_times[store] = []
                     store_dwell_times[store].append(dwell_time)
 
         # Compute the average dwell time for each store and format the output
-        average_dwell_times = [
-            {"store": store, "averageDwellTime": sum(times) / len(times)}
-            for store, times in store_dwell_times.items()
-        ]
+        
+        average_dwell_times = []
+        for store, times in store_dwell_times.items():
+            # Compute the average dwell time
+            average_time = sum(times) / len(times)
+
+            # Fetch store details from the secondary collection
+            store_details_docs = store_collection.where("name", "==", store).stream()
+            store_details = {"description": None, "location": None}
+            for detail_doc in store_details_docs:
+                details = detail_doc.to_dict()
+                store_details["description"] = details.get("description")
+                store_details["location"] = details.get("location")
+                break  # Assuming 'name' is unique, take the first match
+
+            # Append the result
+            average_dwell_times.append({
+                "storeName": store,
+                "averageDwellTime": average_time,
+                "description": store_details["description"],
+                "location": store_details["location"]
+            })
 
         # Return the results as JSON
         return jsonify(average_dwell_times), 200
@@ -139,22 +161,27 @@ def get_average_dwell_times():
     
 
 
-@dwelltimes_bp.route('/dwelltimes/average/<string:storename>', methods=['GET'])
-def get_average_dwell_time_for_store(storename):
+@dwelltimes_bp.route('/dwelltimes/average', methods=['POST'])
+def get_average_dwell_time_for_store():
     try:
+        # Parse the request body to get the store name
+        data = request.json
+        storename = data["store"]
+
         # Get the current timestamp and calculate the threshold (5 minutes ago)
         current_time = datetime.now(timezone.utc).replace(tzinfo=pytz.UTC)
-        #current_time = current_time - timedelta(minutes=300)
         time_threshold = current_time - timedelta(minutes=5)
 
-        # Fetch the Firestore collection
+        # Fetch the Firestore collections
         collection = get_collection('dwelltimes')
+        store_collection = get_collection('stores')
+
         docs = collection.stream()
 
         # Initialize a list to store dwell times for the specific store
         dwell_times = []
 
-        # Process each document
+        # Process each document in the dwelltimes collection
         for doc in docs:
             record = doc.to_dict()
 
@@ -179,9 +206,25 @@ def get_average_dwell_time_for_store(storename):
         # Compute the average dwell time for the specified store
         if dwell_times:
             average_dwell_time = sum(dwell_times) / len(dwell_times)
-            result = {"store": storename, "averageDwellTime": average_dwell_time}
         else:
-            result = {"store": storename, "averageDwellTime": None, "message": "No recent data found"}
+            average_dwell_time = None
+
+        # Fetch the store details from the stores collection
+        store_details = {"description": None, "location": None}
+        store_docs = store_collection.where("name", "==", storename).stream()
+        for detail_doc in store_docs:
+            details = detail_doc.to_dict()
+            store_details["description"] = details.get("description")
+            store_details["location"] = details.get("location")
+            break  # Assuming 'name' is unique, take the first match
+
+        # Create the final JSON response
+        result = {
+            "storeName": storename,
+            "averageDwellTime": average_dwell_time,
+            "description": store_details["description"],
+            "location": store_details["location"],
+        }
 
         # Return the results as JSON
         return jsonify(result), 200
