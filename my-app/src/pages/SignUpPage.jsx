@@ -1,48 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SignUpPageContext } from '../contexts/SignUpPageContext';
+
 
 const SignUpPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  
+  const {
+    name,
+    setName,
+    email,
+    setEmail,
+    password,
+    setPassword,
+  } = useContext(SignUpPageContext);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // React Router's navigation hook
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => setName(e.target.value);
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePWChange = (e) => setPassword(e.target.value);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
-    setLoading(true);
+  const handleSubmit = (event) => {
+    event.preventDefault();
     setError('');
 
-    const userDetails = { name, email, password };
-
-    try {
-      const response = await fetch('https://your-backend-server.com/api/preferences', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userDetails),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-
-      console.log('Details saved successfully!');
-      // Navigate to the main page upon successful submission
-      navigate('/');
-    } catch (err) {
-      setError('Failed to save details. Please try again.');
-      
-      console.error(err);
-    } finally {
-      setLoading(false);
+    if (!name || !email || !password) {
+      setError('Please fill out all fields.');
+      return;
     }
+
+    // Preferences are already saved in the context
+    console.log('Preferences saved:', {
+      name,
+      email,
+      password,
+    });
+
+    // Navigate to another page after submission
+    navigate('/preferences');
   };
 
   return (
@@ -50,7 +45,6 @@ const SignUpPage = () => {
       <section className="bg-indigo-50">
         <div className="container m-auto max-w-2xl py-24">
           <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
-            {/* Attach the handleSubmit function to the form's onSubmit */}
             <form onSubmit={handleSubmit}>
               <h2 className="text-3xl text-center font-semibold mb-6">Sign Up</h2>
 
@@ -96,15 +90,12 @@ const SignUpPage = () => {
               </div>
 
               <div>
-                <button
-                  className={`bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline ${
-                    loading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  type="submit"
-                  disabled={loading}
-                >
-                  {loading ? 'Signing Up...' : 'Sign Up'}
-                </button>
+              <button
+                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Submit
+              </button>
               </div>
             </form>
           </div>

@@ -9,6 +9,7 @@ import HawkerPage, {hawkerLoader} from './pages/HawkerPage'
 import PreferencesPage from './pages/PreferencesPage'
 import SignUpPage from './pages/SignUpPage'
 import { PreferencesProvider } from './Contexts/PreferencesContext'
+import { SignUpPageProvider } from './contexts/SignUpPageContext'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,9 +28,11 @@ const router = createBrowserRouter(
 
 const App = () => {
   return (
-    <PreferencesProvider>
-      <RouterProvider router={router} />
-    </PreferencesProvider>
+    <SignUpPageProvider>
+      <PreferencesProvider>
+        <RouterProvider router={router} />
+      </PreferencesProvider>
+    </SignUpPageProvider>
   );
 };
 export default App
