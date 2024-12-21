@@ -156,7 +156,7 @@ def get_average_dwell_times():
             # Append the result
             average_dwell_times.append({
                 "storeName": store,
-                "averageDwellTime": average_time,
+                "averageDwellTime": f"{average_time:.2f}" if average_time is not None else None,
                 "description": store_details["description"],
                 "location": store_details["location"]
             })
@@ -238,7 +238,7 @@ def get_average_dwell_time_for_store():
         # Create the final JSON response
         result = {
             "storeName": storename,
-            "averageDwellTime": round(average_dwell_time, 2),
+            "averageDwellTime": f"{average_dwell_time:.2f}" if average_dwell_time is not None else None,
             "description": store_details["description"],
             "location": store_details["location"],
         }

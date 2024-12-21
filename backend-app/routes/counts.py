@@ -86,7 +86,7 @@ def get_capacity():
         }
 
         # Include the overall capacity in the result
-        result["overallCapacity"] = overall_capacity
+        result["overallCapacity"] = f"{overall_capacity:.2f}"
 
         # Return the result as JSON
         return jsonify(result), 200
