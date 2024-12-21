@@ -1,2 +1,4 @@
 model/.venv
 firebase_key.json
+routes/__pycache__
+utils/__pycache__
