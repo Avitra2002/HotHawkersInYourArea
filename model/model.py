@@ -313,6 +313,7 @@ import logging
 from typing import List, Optional
 from utils.general import find_in_list
 from utils.timer import FPSBasedTimer
+import requests
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -332,7 +333,8 @@ class CanteenAnalyzer:
         output_folder: str = "output",
         position_threshold: float = 50.0,  # Max distance to consider same person
         time_threshold: int = 10,  # Frames to look back for matching
-        min_dwell_time: float = 10.0
+        min_dwell_time: float = 10.0,
+        api_base_url: str = "http://127.0.0.1:5000"
 
     ):
         # Basic initialization
@@ -345,6 +347,7 @@ class CanteenAnalyzer:
         self.position_threshold = position_threshold
         self.time_threshold = time_threshold
         self.min_dwell_time = min_dwell_time
+        self.api_base_url = api_base_url
         
         # Create timestamp for this run
         self.run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -372,7 +375,7 @@ class CanteenAnalyzer:
         self.frame_count = 0
         
         # Create CSV files with headers
-        self._initialize_csv_files()
+        # self._initialize_csv_files()
 
     def _setup_zones(self, zones_config: List[List[np.ndarray]]):
         """Setup detection zones"""
@@ -396,9 +399,9 @@ class CanteenAnalyzer:
         ])
         
         self.zone_labels = {
-            0: "Queue - Chicken Rice",
-            1: "Queue - Indian",
-            2: "Queue - Taiwanese",
+            0: "Chicken Rice",
+            1: "Indian",
+            2: "Taiwanese",
             3: "Seating - Aisle 1",
             4: "Seating - Aisle 2",
             5: "Seating - Aisle 3"
@@ -417,35 +420,35 @@ class CanteenAnalyzer:
             for idx, zone in enumerate(self.zones)
         ]
 
-    def _initialize_csv_files(self):
-        """Initialize CSV files with headers"""
-        # Initialize dwell time CSVs for queue zones
-        for zone_id in range(3):
-            dwell_path = self._get_dwell_path(zone_id)
-            with open(dwell_path, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(['Tracker ID', 'Entry Time', 'Exit Time', 'Dwell Time (mm:ss)', 'Total Seconds'])
+    # def _initialize_csv_files(self):
+    #     """Initialize CSV files with headers"""
+    #     # Initialize dwell time CSVs for queue zones
+    #     for zone_id in range(3):
+    #         dwell_path = self._get_dwell_path(zone_id)
+    #         with open(dwell_path, 'w', newline='') as f:
+    #             writer = csv.writer(f)
+    #             writer.writerow(['Tracker ID', 'Entry Time', 'Exit Time', 'Dwell Time (mm:ss)', 'Total Seconds'])
         
-        # Initialize count CSVs for aisle zones
-        for zone_id in range(3, 6):
-            count_path = self._get_count_path(zone_id)
-            with open(count_path, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(['Timestamp', 'Count'])
+    #     # Initialize count CSVs for aisle zones
+    #     for zone_id in range(3, 6):
+    #         count_path = self._get_count_path(zone_id)
+    #         with open(count_path, 'w', newline='') as f:
+    #             writer = csv.writer(f)
+    #             writer.writerow(['Timestamp', 'Count'])
 
-    def _get_dwell_path(self, zone_id: int) -> str:
-        """Get path for dwell time CSV file"""
-        return os.path.join(
-            self.dwell_dir,
-            f"{self.zone_labels[zone_id].replace(' - ', '_').lower()}_{self.run_timestamp}.csv"
-        )
+    # def _get_dwell_path(self, zone_id: int) -> str:
+    #     """Get path for dwell time CSV file"""
+    #     return os.path.join(
+    #         self.dwell_dir,
+    #         f"{self.zone_labels[zone_id].replace(' - ', '_').lower()}_{self.run_timestamp}.csv"
+    #     )
 
-    def _get_count_path(self, zone_id: int) -> str:
-        """Get path for count CSV file"""
-        return os.path.join(
-            self.count_dir,
-            f"{self.zone_labels[zone_id].replace(' - ', '_').lower()}_{self.run_timestamp}.csv"
-        )
+    # def _get_count_path(self, zone_id: int) -> str:
+    #     """Get path for count CSV file"""
+    #     return os.path.join(
+    #         self.count_dir,
+    #         f"{self.zone_labels[zone_id].replace(' - ', '_').lower()}_{self.run_timestamp}.csv"
+    #     )
 
     def _calculate_distance(self, pos1, pos2):
         """Calculate Euclidean distance between two positions"""
@@ -476,6 +479,40 @@ class CanteenAnalyzer:
                 best_match = tracker_id
         
         return best_match
+    
+    def _send_dwell_time_data(self, zone_id: int, dwell_time: float, exit_time: str):
+        """Send dwell time data to API endpoint"""
+        payload = {
+            "name": self.zone_labels[zone_id],
+            # "dwell_time_seconds": round(dwell_time, 2),
+            "dwell_time": f"{int(dwell_time // 60):02d}:{int(dwell_time % 60):02d}",
+            "timestamp": exit_time
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base_url}/dwell", json=payload)
+            response.raise_for_status()
+            # logger.info(f"Successfully sent dwell time data for tracker {tracker_id} in {self.zone_labels[zone_id]}")
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to send dwell time data: {e}")
+
+    def _send_count_data(self, zone_id: int, count: int, timestamp: str):
+        """Send count data to API endpoint"""
+        payload = {
+            "zone": self.zone_labels[zone_id], ##name of zone
+            "count": count,
+            "timestamp": timestamp,
+            "capacity": self.get_zone_capacity(zone_id),
+            "status": round((count/self.get_zone_capacity(zone_id))*100,2)
+
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base_url}/counts", json=payload)
+            response.raise_for_status()
+            logger.info(f"Successfully sent count data for {self.zone_labels[zone_id]}")
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to send count data: {e}")
 
     def _update_tracker_history(self, zone_idx: int, detections_in_zone: sv.Detections):
         """Update position history for all trackers"""
@@ -513,23 +550,32 @@ class CanteenAnalyzer:
         exit_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         entry_time = (datetime.now() - timedelta(seconds=dwell_time)).strftime('%Y-%m-%d %H:%M:%S')
         
-        with open(dwell_path, 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([
-                tracker_id,
-                entry_time,
-                exit_time,
-                f"{int(dwell_time // 60):02d}:{int(dwell_time % 60):02d}",
-                round(dwell_time, 2)
-            ])
+        # with open(dwell_path, 'a', newline='') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerow([
+        #         tracker_id,
+        #         entry_time,
+        #         exit_time,
+        #         f"{int(dwell_time // 60):02d}:{int(dwell_time % 60):02d}",
+        #         round(dwell_time, 2)
+        #     ])
+        self._send_dwell_time_data(
+            zone_id=zone_id, ##store name
+            # tracker_id=tracker_id,
+            # entry_time=entry_time,
+            exit_time=exit_time,
+            dwell_time=dwell_time
+        )
         logger.info(f"Person {tracker_id} exited {self.zone_labels[zone_id]} after {round(dwell_time, 2)} seconds")
 
     def _save_count_record(self, zone_id: int, count: int, timestamp: str):
         """Save count record for aisle zone"""
-        count_path = self._get_count_path(zone_id)
-        with open(count_path, 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([timestamp, count])
+        # count_path = self._get_count_path(zone_id)
+        # with open(count_path, 'a', newline='') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerow([timestamp, count])
+        self._send_count_data(zone_id, count, timestamp)
+
 
     def get_zone_capacity(self, zone_id: int) -> int:
         """Return seating capacity for each zone"""
@@ -693,7 +739,7 @@ def main():
     ]
     
     analyzer = CanteenAnalyzer(
-        source_video_path="test.mov",
+        source_video_path="short.mov",
         zones_config=zones_config,
 
     )

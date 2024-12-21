@@ -1,8 +1,11 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
 
 # Path to your Firebase Admin SDK key
-FIREBASE_KEY_PATH = "firebase_key.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+FIREBASE_KEY_PATH = os.path.join(BASE_DIR, 'firebase_key.json')
 
 # Initialize Firebase app
 cred = credentials.Certificate(FIREBASE_KEY_PATH)
