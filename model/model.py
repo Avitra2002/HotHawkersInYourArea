@@ -8,6 +8,8 @@ import csv
 from datetime import datetime
 import logging
 from typing import List, Optional
+from utils.general import find_in_list
+from utils.timer import FPSBasedTimer
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -15,15 +17,14 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
-
 class CanteenAnalyzer:
     def __init__(
         self,
         source_video_path: str,
         zones_config: List[List[np.ndarray]],
         weights: str = "yolov8n.pt",
-        confidence: float = 0.3,
-        sample_interval: int = 300,  # 5 minutes in seconds
+        confidence: float = 0.4,
+        sample_interval: int = 120,  # 5 minutes in seconds
         output_folder: str = "output"
     ):
         self.source_video_path = source_video_path
@@ -82,11 +83,12 @@ class CanteenAnalyzer:
         # }
 
         self.zone_labels = {
-            0: "Queue - Western",
-            1: "Queue - Asian",
-            2: "Queue - Indian",
-            3: "Seating - Main Hall",
-            4: "Seating - Window Area",
+            0: "Queue - Chicken Rice",
+            1: "Queue - Indian",
+            2: "Queue - Taiwanese",
+            3: "Seating - Alse 1",
+            4: "Seating - Alse 2",
+            5: "Seating - Alse 3"
         }
 
         self.box_annotator = sv.BoundingBoxAnnotator(color=self.colors)
@@ -95,15 +97,15 @@ class CanteenAnalyzer:
             sv.PolygonZoneAnnotator(
                 zone=zone,
                 color=self.colors.by_idx(idx),
-                thickness=2,
-                text_thickness=2,
+                thickness=1,
+                text_thickness=1,
                 text_scale=1
             )
             for idx, zone in enumerate(self.zones)
         ]
         
         # Initialize timers for dwell time tracking
-        self.timers = [sv.FPSBasedTimer(self.video_info.fps) for _ in self.zones]
+        self.timers = [FPSBasedTimer(self.video_info.fps) for _ in self.zones]
         
         # Storage for statistics
         self.zone_counts = {idx: [] for idx in range(len(self.zones))}
@@ -199,9 +201,11 @@ class CanteenAnalyzer:
         for frame in self.frames_generator:
             current_time = frame_count / self.video_info.fps
             
-            # Process frame if it's time for a new sample
+            # Always process frame for visualization
+            annotated_frame, stats = self.process_frame(frame, frame_count)
+            
+            # Save statistics at sample interval
             if last_sample_time is None or (current_time - last_sample_time) >= self.sample_interval:
-                annotated_frame, stats = self.process_frame(frame, frame_count)
                 last_sample_time = current_time
                 
                 # Log statistics
@@ -214,8 +218,6 @@ class CanteenAnalyzer:
                         'timestamp': zone_stats['timestamp'],
                         'count': zone_stats['count']
                     })
-            else:
-                annotated_frame = frame
             
             video_writer.write(annotated_frame)
             frame_count += 1
@@ -226,17 +228,11 @@ class CanteenAnalyzer:
     def get_zone_capacity(self, zone_id: int) -> int:
         """Return the seating capacity for each seating zone"""
         # Define seating capacity for each seating area
-        # seating_capacity = {
-        #     4: 100,  # Main Hall
-        #     5: 50,   # Window Area
-        #     6: 30,   # Corner
-        #     7: 40,   # Outdoor
-        #     8: 20,   # Private
-        #     9: 60    # Extension
-        # }
         seating_capacity = {
-            3: 6,  # Main Hall
-            4: 6,   # Window Area
+            3: 6,
+            4: 18,  # Main Hall
+            5: 18,   # Window Area
+            
         }
         return seating_capacity.get(zone_id, 0)
     
@@ -319,26 +315,25 @@ class CanteenAnalyzer:
 
 
 def main():
+    # Example zone configuration for all areas (adjust coordinates for your canteen)
     zones_config = [
         # Queue Areas
-        [[100, 100], [200, 100], [200, 200], [100, 200]],  # Western Food Queue
-        [[250, 100], [350, 100], [350, 200], [250, 200]],  # Asian Food Queue
-        [[400, 100], [500, 100], [500, 200], [400, 200]],  # Indian Food Queue
-        # [[550, 100], [650, 100], [650, 200], [550, 200]],  # Drinks Queue
+        [[233, 535], [243, 668], [277, 702], [546, 666], [529, 596], [529, 501], [228, 508]],  # Chicken Rice Queue
+        [[529, 499], [726, 491], [728, 591], [823, 622], [554, 664], [520, 627]],  # Indian Food Queue
+        [[740, 486], [884, 479], [886, 569], [942, 576], [757, 608]],  # Taiwanese Queue
+    
         
         # Seating Areas
-        [[100, 300], [300, 300], [300, 500], [100, 500]],  # Main Hall
-        [[350, 300], [550, 300], [550, 500], [350, 500]],  # Window Area
-        # [[600, 300], [800, 300], [800, 500], [600, 500]],  # Corner
-        # [[100, 550], [300, 550], [300, 750], [100, 750]],  # Outdoor
-        # [[350, 550], [550, 550], [550, 750], [350, 750]],  # Private
-        # [[600, 550], [800, 550], [800, 750], [600, 750]],  # Extension
+        [[8, 741], [284, 702], [714, 1071], [17, 1069]],  # Alse 1
+        [[447, 722], [767, 639], [1643, 889], [1383, 1074], [1177, 1064]],  # Alse 2
+        [[743, 632], [930, 586], [1699, 698], [1565, 838]], # Alse 3
+
     ]
     
     analyzer = CanteenAnalyzer(
-        source_video_path="canteen_video.mp4",
+        source_video_path="prototype_video.mp4",
         zones_config=zones_config,
-        sample_interval=300  # 5 minutes
+        sample_interval=120  # 5 minutes
     )
     
     analyzer.analyze_video()

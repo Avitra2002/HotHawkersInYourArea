@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PreferencesContext } from '../Contexts/PreferencesContext';
 
 const PreferencesPage = () => {
-  const [selectedCanteen, setSelectedCanteen] = useState('');
-  const [stores, setStores] = useState([]);
-  const [lunchTime, setLunchTime] = useState('');
-  const [dinnerTime, setDinnerTime] = useState('');
-  const [loading, setLoading] = useState(false);
+  const {
+    selectedCanteen,
+    setSelectedCanteen,
+    stores,
+    setStores,
+    lunchTime,
+    setLunchTime,
+    dinnerTime,
+    setDinnerTime,
+  } = useContext(PreferencesContext);
+
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -28,39 +35,25 @@ const PreferencesPage = () => {
   const handleLunchChange = (event) => setLunchTime(event.target.value);
   const handleDinnerChange = (event) => setDinnerTime(event.target.value);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
     setError('');
 
-    const preferences = {
+    if (!selectedCanteen || !lunchTime || !dinnerTime) {
+      setError('Please fill out all fields.');
+      return;
+    }
+
+    // Preferences are already saved in the context
+    console.log('Preferences saved:', {
       selectedCanteen,
       stores,
       lunchTime,
       dinnerTime,
-    };
+    });
 
-    try {
-      const response = await fetch('https://your-backend-server.com/api/preferences', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(preferences),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-
-      console.log('Preferences saved successfully!');
-      navigate('/'); // Redirect to homepage
-    } catch (err) {
-      setError('Failed to save preferences. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    // Navigate to another page after submission
+    navigate('/');
   };
 
   return (
@@ -167,9 +160,8 @@ const PreferencesPage = () => {
               <button
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
-                disabled={loading}
               >
-                {loading ? 'Saving...' : 'Submit'}
+                Submit
               </button>
             </div>
           </form>

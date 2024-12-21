@@ -1,37 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { PreferencesContext } from '../Contexts/PreferencesContext';
+import { SignUpPageContext } from '../contexts/SignUpPageContext';
 
 const Hero = () => {
-  const [name, setName] = useState('');
-  const [location, setLocation] = useState('');
+  const { selectedCanteen } = useContext(PreferencesContext)
+  const { name } = useContext(SignUpPageContext)
 
-  // Fetch name and location when the component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch user data for the name (e.g., from your user endpoint)
-        const userResponse = await fetch('https://your-backend-server.com/api/user');
-        if (!userResponse.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        const userData = await userResponse.json();
-        setName(userData.name);
+  // // Fetch name and location when the component mounts
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       // Fetch user data for the name (e.g., from your user endpoint)
+  //       const userResponse = await fetch('https://your-backend-server.com/api/user');
+  //       if (!userResponse.ok) {
+  //         throw new Error('Failed to fetch user data');
+  //       }
+  //       const userData = await userResponse.json();
+  //       setName(userData.name);
 
-        // Fetch location data (preferences) after submission
-        const preferencesResponse = await fetch('https://your-backend-server.com/api/preferences');
-        if (!preferencesResponse.ok) {
-          throw new Error('Failed to fetch preferences');
-        }
-        const preferencesData = await preferencesResponse.json();
-        setLocation(preferencesData.selectedCanteen || 'Not Set');
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setName('Guest');
-        setLocation('Unknown');
-      }
-    };
+  //       // Fetch location data (preferences) after submission
+  //       const preferencesResponse = await fetch('https://your-backend-server.com/api/preferences');
+  //       if (!preferencesResponse.ok) {
+  //         throw new Error('Failed to fetch preferences');
+  //       }
+  //       const preferencesData = await preferencesResponse.json();
+  //       setLocation(preferencesData.selectedCanteen || 'Not Set');
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       setName('Guest');
+  //       setLocation('Unknown');
+  //     }
+  //   };
 
-    fetchData();
-  }, []); // Empty dependency array means it runs once when the component mounts
+  //   fetchData();
+  // }, []); // Empty dependency array means it runs once when the component mounts
 
   return (
     <section className="bg-indigo-700 py-20 mb-4">
@@ -41,7 +43,7 @@ const Hero = () => {
             Hello {name || 'Guest'},
           </h1>
           <p className="my-4 text-xl text-white">
-            Location: {location || 'Not Set'}
+            Location: {selectedCanteen || 'Not Set'}
           </p>
         </div>
       </div>
