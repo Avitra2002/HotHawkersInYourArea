@@ -39,15 +39,23 @@ const Zones = () => {
     <section className="bg-blue-50 px-4 py-10">
       <div className="container-xl lg:container m-auto">
         <h2 className="text-3xl font-bold text-indigo-500 mb-6 text-center">
-          Zones
+          Zones Capacity
         </h2>
-          {loading ? (<Spinner />) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {stores.map((store) => (
-                <HawkerListing key={store.id} store={store} />
-              ))}
+          {loading ? (<Spinner />) : 
+          <>
+            <div className="flex-1 p-4 bg-blue-100 border border-gray-300 text-center">
+              Zone 1: {zones["Zone 1"]}%
             </div>
-          )}
+            <br />
+            <div className="flex-1 p-4 bg-green-100 border border-gray-300 text-center">
+              Zone 2: {zones["Zone 1"]}%
+            </div>
+            <br />
+            <div className="flex-1 p-4 bg-yellow-100 border border-gray-300 text-center">
+              Zone 3: {zones["Zone 1"]}%
+            </div>
+          </>
+          }
       </div>
     </section>
   )
