@@ -1,2 +1,5 @@
 model/.venv
 firebase_key.json
+model/yolov8n.pt
+model/utils/__pycache__
+model/frame.ipynb
