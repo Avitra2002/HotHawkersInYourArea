@@ -1,5 +1,6 @@
 import React from 'react'
 import { useParams, useLoaderData } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const HawkerPage = () => {
     const { id } = useParams()
@@ -9,12 +10,12 @@ const HawkerPage = () => {
       <>
       <section>
        <div className="container m-auto py-6 px-6 flex justify-end">
-        <a
-          href="/"
+        <Link
+          to="/"
           className="text-indigo-500 hover:text-indigo-600 flex items-center"
         >
           <i className="fas fa-arrow-left mr-2"></i> Back to Homepage
-        </a>
+        </Link>
        </div>
       </section>
 
