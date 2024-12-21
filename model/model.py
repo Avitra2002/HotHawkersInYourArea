@@ -23,8 +23,8 @@ class CanteenAnalyzer:
         source_video_path: str,
         zones_config: List[List[np.ndarray]],
         weights: str = "yolov8n.pt",
-        confidence: float = 0.3,
-        sample_interval: int = 60,  # 5 minutes in seconds
+        confidence: float = 0.4,
+        sample_interval: int = 120,  # 5 minutes in seconds
         output_folder: str = "output"
     ):
         self.source_video_path = source_video_path
@@ -97,8 +97,8 @@ class CanteenAnalyzer:
             sv.PolygonZoneAnnotator(
                 zone=zone,
                 color=self.colors.by_idx(idx),
-                thickness=2,
-                text_thickness=2,
+                thickness=1,
+                text_thickness=1,
                 text_scale=1
             )
             for idx, zone in enumerate(self.zones)
@@ -229,12 +229,10 @@ class CanteenAnalyzer:
         """Return the seating capacity for each seating zone"""
         # Define seating capacity for each seating area
         seating_capacity = {
-            4: 100,  # Main Hall
-            5: 50,   # Window Area
-            6: 30,   # Corner
-            7: 40,   # Outdoor
-            8: 20,   # Private
-            9: 60    # Extension
+            3: 6,
+            4: 18,  # Main Hall
+            5: 18,   # Window Area
+            
         }
         return seating_capacity.get(zone_id, 0)
     
@@ -333,9 +331,9 @@ def main():
     ]
     
     analyzer = CanteenAnalyzer(
-        source_video_path="prototype_video.MOV",
+        source_video_path="prototype_video.mp4",
         zones_config=zones_config,
-        sample_interval=60  # 5 minutes
+        sample_interval=120  # 5 minutes
     )
     
     analyzer.analyze_video()

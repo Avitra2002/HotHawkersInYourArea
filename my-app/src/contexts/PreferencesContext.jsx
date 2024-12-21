@@ -25,3 +25,5 @@ export const PreferencesProvider = ({ children }) => {
     </PreferencesContext.Provider>
   );
 };
+
+http://485674856/preferences/{stores}

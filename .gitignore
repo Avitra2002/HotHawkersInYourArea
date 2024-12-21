@@ -3,3 +3,7 @@ firebase_key.json
 model/yolov8n.pt
 model/utils/__pycache__
 model/frame.ipynb
+model/output
+model/venv
+model/prototype_video.mp4
+backend-app/.venv
