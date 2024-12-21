@@ -110,8 +110,8 @@ def add_data():
                 'error': f'Missing required fields: {", ".join(missing_fields)}'
             }), 400
 
-        # timestamp = data["timestamp"]  # format "2024-12-22 12:00:00"
-        timestamp= "2024-12-22T12:00:00.000Z"
+        timestamp = data["timestamp"]  # format "2024-12-22 12:00:00"
+        # timestamp= "2024-12-22T12:00:00.000Z"
         store_name = data["store"]
         
         logger.debug(f"Processing request for store: {store_name} at time: {timestamp}")
