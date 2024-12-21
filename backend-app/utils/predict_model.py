@@ -11,7 +11,7 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 
 class DwellTimePredictor:
-    def __init__(self, save_dir='saved_models'):
+    def __init__(self, save_dir='./routes/saved_models'):
         self.save_dir = save_dir
         self.trained_models = {}
         self.seq_length = 30
@@ -206,7 +206,7 @@ class DwellTimePredictor:
             
         # Standardize timestamp timezone handling
         if isinstance(input_timestamp, str):
-            input_timestamp = pd.to_datetime(input_timestamp).tz_localize('UTC')
+            input_timestamp = pd.to_datetime(input_timestamp).tz_convert('UTC')
         elif isinstance(input_timestamp, pd.Timestamp) and input_timestamp.tz is None:
             input_timestamp = input_timestamp.tz_localize('UTC')
         elif isinstance(input_timestamp, pd.Timestamp):

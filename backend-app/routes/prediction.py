@@ -3,12 +3,12 @@ from pydantic import BaseModel
 from flask import Blueprint, request, jsonify
 from utils.firebase_config import get_collection
 from utils.predict_model import DwellTimePredictor
-
+import pytz
 prediction_bp = Blueprint("predict", __name__)
 
 
 #Create new instance of data
-@prediction_bp.route('/predict', methods=['GET'])
+@prediction_bp.route('/predict', methods=['POST'])
 def add_data():
     try:
         # Get and validate payload
@@ -17,7 +17,7 @@ def add_data():
             return jsonify({
                 'error': 'Missing required fields: timestamp and store'
             }), 400
-
+        #timestamp = datetime.now(pytz.UTC).isoformat()
         timestamp = data["timestamp"]  # format "2024-12-22 12:00:00"
         store_name = data["store"]
 
