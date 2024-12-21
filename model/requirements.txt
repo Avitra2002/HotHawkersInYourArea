@@ -3,4 +3,5 @@ supervision
 ultralytics
 prophet
 scikit-learn
+tensorflow
 

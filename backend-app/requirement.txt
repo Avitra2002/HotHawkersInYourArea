@@ -2,3 +2,5 @@ flask
 firebase_admin
 pydantic
 flask_cors
+tensorflow
+scikit-learn
