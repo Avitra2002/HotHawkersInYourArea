@@ -329,11 +329,11 @@ class CanteenAnalyzer:
         zones_config: List[List[np.ndarray]],
         weights: str = "yolov8n.pt",
         confidence: float = 0.4,
-        sample_interval: int = 120,
+        sample_interval: int = 30,
         output_folder: str = "output",
         position_threshold: float = 50.0,  # Max distance to consider same person
         time_threshold: int = 10,  # Frames to look back for matching
-        min_dwell_time: float = 10.0,
+        min_dwell_time: float = 2.0,
         api_base_url: str = "http://127.0.0.1:5000"
 
     ):
@@ -481,16 +481,19 @@ class CanteenAnalyzer:
         return best_match
     
     def _send_dwell_time_data(self, zone_id: int, dwell_time: float, exit_time: str):
+        dt = datetime.strptime(exit_time, '%Y-%m-%d %H:%M:%S')
+        formatted_timestamp = dt.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+
         """Send dwell time data to API endpoint"""
         payload = {
             "name": self.zone_labels[zone_id],
             # "dwell_time_seconds": round(dwell_time, 2),
-            "dwell_time": f"{int(dwell_time // 60):02d}:{int(dwell_time % 60):02d}",
-            "timestamp": exit_time
+            "dwell_time": f"{round(dwell_time/60,2)}",
+            "timestamp": formatted_timestamp
         }
         
         try:
-            response = requests.post(f"{self.api_base_url}/dwell", json=payload)
+            response = requests.post(f"{self.api_base_url}/dwelltimes", json=payload)
             response.raise_for_status()
             # logger.info(f"Successfully sent dwell time data for tracker {tracker_id} in {self.zone_labels[zone_id]}")
         except requests.exceptions.RequestException as e:
@@ -498,10 +501,12 @@ class CanteenAnalyzer:
 
     def _send_count_data(self, zone_id: int, count: int, timestamp: str):
         """Send count data to API endpoint"""
+        dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+        formatted_timestamp = dt.strftime('%Y-%m-%dT%H:%M:%S.000Z')
         payload = {
             "zone": self.zone_labels[zone_id], ##name of zone
             "count": count,
-            "timestamp": timestamp,
+            "timestamp": formatted_timestamp,
             "capacity": self.get_zone_capacity(zone_id),
             "status": round((count/self.get_zone_capacity(zone_id))*100,2)
 
@@ -546,7 +551,7 @@ class CanteenAnalyzer:
             logger.debug(f"Skipping record for tracker {tracker_id} in {self.zone_labels[zone_id]} - dwell time {round(dwell_time, 2)}s < minimum {self.min_dwell_time}s")
             return
         
-        dwell_path = self._get_dwell_path(zone_id)
+        # dwell_path = self._get_dwell_path(zone_id)
         exit_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         entry_time = (datetime.now() - timedelta(seconds=dwell_time)).strftime('%Y-%m-%d %H:%M:%S')
         
