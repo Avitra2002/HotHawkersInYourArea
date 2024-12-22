@@ -92,7 +92,7 @@ def get_average_dwell_times():
     try:
         # Get the current timestamp and calculate the threshold (5 minutes ago)
         current_time = datetime.now(timezone.utc).replace(tzinfo=pytz.UTC)
-        time_threshold = current_time - timedelta(minutes=5)
+        time_threshold = current_time - timedelta(minutes=1)
         
         # Fetch the Firestore collection
         collection = get_collection('dwelltimes')
@@ -179,7 +179,7 @@ def get_average_dwell_time_for_store():
 
         # Get the current timestamp and calculate the threshold (5 minutes ago)
         current_time = datetime.now(timezone.utc).replace(tzinfo=pytz.UTC)
-        time_threshold = current_time - timedelta(minutes=10000)
+        time_threshold = current_time - timedelta(minutes=1)
 
         # Fetch the Firestore collections
         collection = get_collection('dwelltimes')

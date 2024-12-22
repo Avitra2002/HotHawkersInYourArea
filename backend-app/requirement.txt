@@ -4,3 +4,6 @@ pydantic
 flask_cors
 tensorflow
 scikit-learn
+pytz
+pandas
+matplotli

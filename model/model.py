@@ -333,7 +333,7 @@ class CanteenAnalyzer:
         output_folder: str = "output",
         position_threshold: float = 50.0,  # Max distance to consider same person
         time_threshold: int = 10,  # Frames to look back for matching
-        min_dwell_time: float = 2.0,
+        min_dwell_time: float = 8.0,
         api_base_url: str = "http://127.0.0.1:5000"
 
     ):
@@ -734,17 +734,17 @@ def main():
     zones_config = [
         # Queue Areas
         [[213, 412], [222, 567], [519, 550], [508, 401]],  # Chicken Rice Queue
-        [[522, 409], [531, 589], [730, 572], [727, 401]],  # Indian Food Queue
-        [[735, 404], [735, 538], [749, 561], [884, 550], [884, 407]],  # Taiwanese Queue
+        [[523, 413], [529, 526], [728, 512], [725, 416]],  # Indian Food Queue
+        [[737, 419], [742, 523], [883, 520], [877, 422]],  # Taiwanese Queue
         
         # Seating Areas
-        [[14, 696], [281, 665], [676, 1066], [8, 1069]],  # Aisle 1
-        [[424, 684], [688, 634], [1583, 864], [1311, 1063]],  # Aisle 2
-        [[775, 620], [938, 583], [1681, 696], [1558, 822]], # Aisle 3
+        [[-1, 601], [291, 589], [876, 1076], [26, 1070]],  # Aisle 1
+        [[377, 607], [641, 568], [1691, 899], [1444, 1073], [989, 1062]],  # Aisle 2
+        [[758, 601], [891, 561], [1725, 688], [1565, 814]], # Aisle 3
     ]
     
     analyzer = CanteenAnalyzer(
-        source_video_path="short.mov",
+        source_video_path="prototype_video.mp4",
         zones_config=zones_config,
 
     )

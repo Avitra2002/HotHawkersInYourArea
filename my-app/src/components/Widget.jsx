@@ -44,12 +44,12 @@ const Widget = () => {
               {selectedStore || 'Loading...'}
             </h2>
             <br />
-            <p className="mb-2 text-center">
+            <p className="mb-2 text-xl text-center">
               Current Wait Time: {currentWaitTime ? `${currentWaitTime} mins` : 'Loading...'}
             </p>
-            <p className="mb-4 text-center">
+            {/* <p className="mb-4 text-center">
               Predicted Wait Time: {predictedWaitTime ? `${currentWaitTime} mins` : 'Loading...'}
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

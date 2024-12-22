@@ -44,25 +44,22 @@ def get_capacity():
         # Process each document to extract the latest data for each zone
         for doc in docs:
             record = doc.to_dict()
+            print(f"Document Data: {record}")  # Debugging log
 
-            # Assuming the document has the following fields:
-            # - "zone" (name of the zone)
-            # - "timestamp" (timestamp when the count was recorded)
-            # - "current_count" (the current count of people in the zone)
-            # - "capacity" (the total capacity of the zone)
-
+            # Extract fields with safeguards
             zone = record.get('zone')
             timestamp_str = record.get('timestamp')  # Assuming timestamp is in ISO format
-            current_count = record.get('current_count', 0)
-            capacity = record.get('capacity', 0)
+            current_count = int(record.get('count', 0))  # Default to 0 if missing
+            capacity = int(record.get('capacity', 0))  # Default to 0 if missing
             status = record.get('status', 0)
 
-            if zone and timestamp_str and current_count is not None and capacity is not None:
+            if zone and timestamp_str and capacity is not None:
                 # Parse the timestamp
                 try:
                     timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
                 except ValueError:
-                    continue  # Skip if timestamp is invalid
+                    print(f"Invalid timestamp: {timestamp_str}")  # Debugging log
+                    continue  # Skip invalid timestamps
 
                 # Check if this is the latest data for the zone
                 if zone not in latest_zone_data or timestamp > latest_zone_data[zone]["timestamp"]:
@@ -73,11 +70,15 @@ def get_capacity():
                         "capacity": capacity,
                         "status": status
                     }
-                    
-        # Update the overall count and capacity
+
+        print(f"Latest Zone Data: {latest_zone_data}")  # Debugging log
+
+        # Calculate total count and capacity
         total_count = sum(data["current_count"] for data in latest_zone_data.values())
         total_capacity = sum(data["capacity"] for data in latest_zone_data.values())
         overall_capacity = round((total_count / total_capacity) * 100, 0) if total_capacity else 0
+
+        print(f"Total Count: {total_count}, Total Capacity: {total_capacity}, Overall Capacity: {overall_capacity}")  # Debugging log
 
         # Prepare the final result where each zone is a key with the latest status as the value
         result = {
@@ -86,10 +87,11 @@ def get_capacity():
         }
 
         # Include the overall capacity in the result
-        result["overallCapacity"] = f"{overall_capacity:.2f}"
+        result["overallCapacity"] = overall_capacity
 
         # Return the result as JSON
         return jsonify(result), 200
 
     except Exception as e:
+        print(f"Error: {str(e)}")  # Debugging log for errors
         return jsonify({"success": False, "error": str(e)}), 400
