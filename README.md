@@ -9,16 +9,20 @@
 For this project, please use two terminals for frontend and backend
 
 ### Frontend
+```
 cd my-app
 npm install
 npm run dev
+```
 
 ### Backend
+```
 cd backend-app
 python -m .venv venv
 source venv/bin/activate
 pip install -r requirement.txt
 python app.py
+```
 
 ### Port
 Frontend is accessible at http://localhost:3000
