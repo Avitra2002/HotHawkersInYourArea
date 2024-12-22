@@ -59,6 +59,9 @@ const Navbar = () => {
             <NavLink to="/preferences" className={linkClass}>
               Edit Preferences
             </NavLink>
+            <NavLink to='/login' className={linkClass}>
+              Log Out
+            </NavLink>
           </div>
         </div>
       </nav>
