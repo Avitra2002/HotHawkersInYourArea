@@ -22,8 +22,7 @@ const StatusBar = () => {
         })
         .then((data) => {
           console.log(data);
-        
-          setCurrentCapacity(data.overallCapacity)
+          setCurrentCapacity(data.overallCapacity); // Example value for testing, replace with `data.capacity` from the API
         })
         .catch((error) => {
           console.error('Error fetching capacity data:', error);
