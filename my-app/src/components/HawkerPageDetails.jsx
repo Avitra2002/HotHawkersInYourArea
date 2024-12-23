@@ -1,5 +1,7 @@
 import React from 'react'
+import PredictionWidget from './PredictionWidget';
 import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 
 const HawkerPageDetails = ({store}) => {
   return (
@@ -51,27 +53,7 @@ const HawkerPageDetails = ({store}) => {
             </main>
   
             <aside>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-6">Company Info</h3>
-  
-                <h2 className="text-2xl">NewTek Solutions</h2>
-  
-                <p className="my-2">
-                  NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.
-                </p>
-  
-                <hr className="my-4" />
-  
-                <h3 className="text-xl">Contact Email:</h3>
-  
-                <p className="my-2 bg-indigo-100 p-2 font-bold">
-                  contact@newteksolutions.com
-                </p>
-  
-                <h3 className="text-xl">Contact Phone:</h3>
-  
-                <p className="my-2 bg-indigo-100 p-2 font-bold">555-555-5555</p>
-              </div>
+              <PredictionWidget />
   
               <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h3 className="text-xl font-bold mb-6">Manage Job</h3>

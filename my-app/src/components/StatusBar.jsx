@@ -8,7 +8,7 @@
 //   useEffect(() => {
 //     if (selectedStore) {
 //       // Make a GET request to the backend
-//       fetch('http://127.0.0.1:5000/counts/capacity', {
+//       fetch('http://10.32.4.205:5000/counts/capacity', {
 //         method: 'GET',
 //         headers: {
 //           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ const StatusBar = () => {
 
   const fetchCapacityData = () => {
     if (selectedStore) {
-      fetch('http://127.0.0.1:5000/counts/capacity', {
+      fetch('http://10.32.4.205:5000/counts/capacity', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

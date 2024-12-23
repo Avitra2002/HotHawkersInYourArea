@@ -12,7 +12,7 @@ const Widget = () => {
       console.log(payload);
 
       // Make a POST request to the backend
-      fetch('http://127.0.0.1:5000/dwelltimes/average', {
+      fetch('http://10.32.4.205:5000/dwelltimes/average', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ const Widget = () => {
         <div className="grid grid-cols-1 gap-4 p-4 rounded-lg place-items-center">
           <div className="bg-gray-100 p-4 shadow-md w-[90%] mx-auto rounded-lg lg:w-[90%]">
             <h2 className="text-2xl font-bold text-center">
-              {selectedStore || 'Loading...'}
+              Preferred Store: {selectedStore || 'Loading...'}
             </h2>
             <br />
             <p className="mb-2 text-xl text-center">

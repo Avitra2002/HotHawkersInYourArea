@@ -334,7 +334,7 @@ class CanteenAnalyzer:
         position_threshold: float = 50.0,  # Max distance to consider same person
         time_threshold: int = 10,  # Frames to look back for matching
         min_dwell_time: float = 8.0,
-        api_base_url: str = "http://127.0.0.1:5000"
+        api_base_url: str = "http://10.32.4.205:5000"
 
     ):
         # Basic initialization

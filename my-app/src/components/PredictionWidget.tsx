@@ -35,11 +35,11 @@ const PredictionWidget: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const currentTime = new Date().toISOString();
-      console.log("Time passed",currentTime)
-      
-      const response = await fetch('http://127.0.0.1:5000/predict', {
+      console.log("Time passed", currentTime)
+
+      const response = await fetch('http://10.32.4.205:5000/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const PredictionWidget: React.FC = () => {
   useEffect(() => {
     fetchPredictions();
     const interval = setInterval(fetchPredictions, 5 * 60 * 1000);
-    
+
     return () => clearInterval(interval);
   }, [selectedStore]);
 
@@ -82,7 +82,7 @@ const PredictionWidget: React.FC = () => {
     <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-gray-800">
-          Predicted Q time in the next Hour from now
+          Predicted Queue Time 
         </h2>
         <div className="w-48">
           <select
@@ -124,17 +124,17 @@ const PredictionWidget: React.FC = () => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="time" 
-                angle={-45} 
-                textAnchor="end" 
+              <XAxis
+                dataKey="time"
+                angle={-45}
+                textAnchor="end"
                 height={60}
                 tick={{ fontSize: 12 }}
               />
               <YAxis
-                label={{ 
-                  value: 'Queue Time (minutes)', 
-                  angle: -90, 
+                label={{
+                  value: 'Queue Time (minutes)',
+                  angle: -90,
                   position: 'insideLeft',
                   offset: 0,
                   style: { textAnchor: 'middle' }

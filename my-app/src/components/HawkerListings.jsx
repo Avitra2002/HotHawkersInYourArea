@@ -11,7 +11,7 @@
 //   useEffect(() => {
 //       if (selectedStore) {
 //         // Make a POST request to the backend
-//         fetch('http://127.0.0.1:5000/dwelltimes/average', {
+//         fetch('http://10.32.4.205:5000/dwelltimes/average', {
 //           method: 'GET',
 //           headers: {
 //             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const HawkerListings = ({ isHome = false }) => {
 
   const fetchStoresData = () => {
     if (selectedStore) {
-      fetch('http://127.0.0.1:5000/dwelltimes/average', {
+      fetch('http://10.32.4.205:5000/dwelltimes/average', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

@@ -25,5 +25,5 @@ python app.py
 ```
 
 ### Port
-Frontend is accessible at http://localhost:3000 \
+Frontend is accessible at http://10.32.4.205:3000 \
 Frontend is exposed at port 5000

@@ -9,7 +9,7 @@
 
 
 # #Create new instance of data
-# @cross_origin(origins="http://localhost:3000")
+# @cross_origin(origins="http://10.32.4.205:3000")
 # @prediction_bp.route('/predict', methods=['POST'])
 # def add_data():
 #     if request.method == "OPTIONS":
@@ -74,7 +74,7 @@ logger = logging.getLogger(__name__)
 
 prediction_bp = Blueprint("predict", __name__)
 
-@cross_origin(origins="http://localhost:3000")
+@cross_origin(origins="http://10.32.4.205:3000")
 @prediction_bp.route('/predict', methods=['POST'])
 def add_data():
     if request.method == "OPTIONS":
