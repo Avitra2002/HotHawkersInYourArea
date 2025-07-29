@@ -1,5 +1,4 @@
 # HotHawkersInYourArea
-## Description
 A smart AI-driven video analytics system for monitoring people flow, estimating dwell times in food queue zones, and predicting future queue behavior using LSTM neural networks.
 
 "Hot Hawkers in Your Area" revolutionizes hawker centres with Hawker 2.0, blending computer vision and advanced app frameworks to create smart, efficient, and customer-focused dining spaces.
